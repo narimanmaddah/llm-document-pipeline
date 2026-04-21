@@ -124,20 +124,28 @@ def main():
     # STAGE 2: QUALITY GATE
     # ========================================================================
     print_section("Stage 2: Quality Gate", level=2)
+    quality_score = 0.85  # Default pass score for demo
     try:
         pipeline = DocumentPipeline(config)
-        quality_score = pipeline.quality_classifier.score(str(fixture_path))
+        # Check if file is a real image (not a text fixture)
+        if fixture_path.suffix.lower() in ['.jpg', '.jpeg', '.png', '.tiff', '.bmp', '.gif']:
+            quality_score = pipeline.quality_classifier.score(str(fixture_path))
+            print_key_value_pairs({
+                "Quality Score": quality_score,
+                "Min Threshold": config.quality_gate.min_quality_score,
+                "Review Below": config.quality_gate.route_to_review_below,
+                "Status": "✓ PASS" if quality_score >= config.quality_gate.min_quality_score else "✗ FAIL",
+            })
 
-        print_key_value_pairs({
-            "Quality Score": quality_score,
-            "Min Threshold": config.quality_gate.min_quality_score,
-            "Review Below": config.quality_gate.route_to_review_below,
-            "Status": "✓ PASS" if quality_score >= config.quality_gate.min_quality_score else "✗ FAIL",
-        })
-
-        if quality_score < config.quality_gate.route_to_review_below:
-            print_section("Pipeline Halted: Document quality too low for processing", level=2)
-            return
+            if quality_score < config.quality_gate.route_to_review_below:
+                print_section("Pipeline Halted: Document quality too low for processing", level=2)
+                return
+        else:
+            print_key_value_pairs({
+                "Quality Check": "SKIPPED (text fixture)",
+                "Assumed Quality": quality_score,
+                "Note": "Text files bypass image-based quality scoring",
+            })
 
     except Exception as e:
         print(f"⚠ Warning: Could not run quality classifier: {e}")
@@ -148,22 +156,32 @@ def main():
     # STAGE 3: OCR & LANGUAGE DETECTION
     # ========================================================================
     print_section("Stage 3: OCR & Language Detection", level=2)
-    try:
-        raw_text = pipeline.ocr_extractor.extract_text(str(fixture_path))
-        language = pipeline.language_detector.detect_language(raw_text)
+    raw_text = invoice_text  # Use invoice text as fallback
+    language = "en"  # Default language
 
+    # Try OCR if file is an image
+    if fixture_path.suffix.lower() in ['.jpg', '.jpeg', '.png', '.tiff', '.bmp', '.gif']:
+        try:
+            raw_text = pipeline.ocr_extractor.extract_text(str(fixture_path))
+        except Exception as e:
+            print(f"⚠ Warning: OCR extraction failed: {e}")
+    else:
+        print_key_value_pairs({
+            "Source": "Text fixture (OCR skipped)",
+            "Extraction Method": "Direct text reading",
+        })
+
+    # Always detect language
+    try:
+        language = pipeline.language_detector.detect_language(raw_text)
         print_key_value_pairs({
             "Detected Language": language.upper() if language else "UNKNOWN",
             "Extracted Text Length": len(raw_text),
-            "Source": "Fixture text (using file as OCR input)",
         })
-
         print(f"\nExtracted text (first 300 chars):")
         print(f"  {truncate_text(raw_text, 300)}")
-
     except Exception as e:
-        print(f"⚠ Warning: OCR extraction failed: {e}")
-        raw_text = invoice_text
+        print(f"⚠ Warning: Language detection failed: {e}")
         language = "en"
 
     # ========================================================================
