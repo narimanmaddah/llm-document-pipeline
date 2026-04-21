@@ -39,3 +39,6 @@ logs/
 *.jsonl
 .env
 .env.local
+
+
+.claude/
