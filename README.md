@@ -149,6 +149,52 @@ print(result.requires_review)      # False
 print(result.pii_detected)         # True (handled; not logged)
 ```
 
+### Run the Example
+
+To see the pipeline in action with formatted output at each stage:
+
+```bash
+python example.py
+```
+
+This processes a sample invoice through all pipeline stages and prints:
+- **Quality Gate**: Document quality scoring
+- **OCR & Language Detection**: Text extraction and language identification
+- **PII Detection**: Sensitive entity detection (names, emails, tax IDs, etc.)
+- **Redaction**: Before/after view of PII removal
+- **LLM Extraction**: Structured field extraction with confidence scores
+- **Validation & Routing**: Human review queue decision
+
+Example output:
+
+```text
+================================================================================
+STAGE 1: DOCUMENT INPUT
+================================================================================
+
+Document path: tests/fixtures/sample_invoice.txt
+Document size: 1847 characters
+
+...
+
+STAGE 4: PII DETECTION & REDACTION
+================================================================================
+
+PII Detected........................ ✓ Yes
+Entity Types Found................. PERSON, EMAIL, IBAN, TAX_ID
+Total Redactions................... 6
+Redaction Mode..................... replace
+
+Entities by Type:
+  Entity Type          | Count
+  ---|---
+  PERSON               | 3
+  EMAIL                | 2
+  IBAN                 | 1
+```
+
+The example uses a synthetic invoice (no real PII). See `tests/fixtures/sample_invoice.txt` to inspect or modify the test data.
+
 ---
 
 ## Configuration
