@@ -1,0 +1,28 @@
+quality_gate:
+  min_quality_score: 0.75
+  route_to_review_below: 0.60
+
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  prompt_version: v1_invoice
+  max_retries: 3
+  temperature: 0.1
+
+confidence:
+  field_review_threshold: 0.80
+  document_auto_approve: 0.90
+
+pii:
+  entities_to_detect:
+    - PERSON
+    - EMAIL
+    - PHONE
+    - IBAN
+    - TAX_ID
+  redaction_mode: replace
+  audit_log_path: logs/pii_audit.jsonl
+
+monitoring:
+  metrics_export: stdout
+  drift_window_days: 7
