@@ -1,0 +1,44 @@
+INVOICE
+
+Invoice Number: INV-2024-0847
+Date: March 15, 2024
+Due Date: April 15, 2024
+
+BILL TO:
+John Smith
+John.Smith@acmecorp.com
+Phone: +1 (555) 123-4567
+
+Acme Manufacturing GmbH
+Hauptstrasse 42
+10115 Berlin, Germany
+Tax ID: DE 123 456 789
+IBAN: DE89 3704 0044 0532 0130 00
+
+SHIP TO:
+Jane Doe
+jane.doe@customer.com
+
+FROM:
+Global Imports Ltd.
+Supplier Tax ID: GB987654321
+Contact: support@globalimports.co.uk
+
+Line Items:
+1. Industrial Components (SKU: COMP-001)    Qty: 50    Unit Price: €125.00    Total: €6,250.00
+2. Assembly Services (SKU: SVC-002)         Qty: 1     Unit Price: €1,500.00   Total: €1,500.00
+3. Shipping & Handling                                                         Total: €350.00
+
+Subtotal:                                                    €8,100.00
+VAT (19%):                                                  €1,539.00
+TOTAL AMOUNT DUE:                                           €9,639.00
+
+Payment Terms: Net 30 days
+Payment Instructions: Wire transfer to IBAN DE89370400440532013000
+BIC: COBADEFFXXX
+
+Please reference invoice number INV-2024-0847 with payment.
+For questions, contact: billing@globalimports.co.uk
+Reference Contact: Maria Rodriguez, +49 (30) 555-8234
+
+Thank you for your business.
